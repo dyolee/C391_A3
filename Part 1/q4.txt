@@ -1,0 +1,9 @@
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dbc: <http://dbpedia.org/resource/Category:>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+SELECT ?Team (COUNT(?Team) as ?Number_of_Finals_Played) WHERE {
+
+	?Finals dct:subject dbc:FIFA_World_Cup_finals	.	# Select all World Cup Finals
+  	?Finals dbo:team ?Team							.	# Select teams participating in Finals
+
+}   GROUP BY ?Team HAVING (COUNT(?Team) > 3)			# Filter by teams that have played in more than 3 finals

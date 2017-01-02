@@ -1,0 +1,8 @@
+create table airport (name, IATA, ICAO, callsign, DST);
+
+insert into airport values ("aaa", "aaa", "bbb", "aaa", "A");
+insert into airport values ("aaa", "bbb", "aaa", "aaa", "A");
+insert into airport values ("aaa", "ccc", "bbb", "ccc", "A");
+insert into airport values ("aaa", "aaa", "ccc", "ccc", "A");
+insert into airport values ("aaa", "aaa", "aaa", "bbb", "A");
+insert into airport values ("aaa", "aaa", "bbb", "ccc", "A");

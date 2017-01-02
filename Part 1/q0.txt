@@ -1,0 +1,8 @@
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dbc: <http://dbpedia.org/resource/Category:>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+SELECT ?lake WHERE {
+  ?lake dct:subject dbc:Jasper_National_Park .
+  ?lake rdf:type schema:LakeBodyOfWater .
+}

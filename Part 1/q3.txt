@@ -1,0 +1,18 @@
+PREFIX dbr: <http://dbpedia.org/resource/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbc: <http://dbpedia.org/resource/Category:>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dbp: <http://dbpedia.org/property/>
+
+SELECT ?Players ?Country ?Team WHERE {
+	?Team rdf:type dbo:SoccerClub 					.		# Select all soccer clubs in existance
+	?Team dbo:league dbr:La_Liga 					.		# From all soccer clubs select only those in La_Liga
+	?Team dct:subject 
+      dbc:Unrelegated_association_football_clubs	.		# Select only the unrelegated clubs
+	?Team dbp:name ?Players 						.		# Get name of all players in those clubs
+  	?Players dbo:birthPlace ?From 					.		# Get the birthplace (city) of all players
+    ?From dbo:country ?Country 						.		# Get the country of birth of all players
+  	?Country dct:subject 									# Select only countries in South America 
+      dbc:Countries_in_South_America				.
+}

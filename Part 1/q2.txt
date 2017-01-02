@@ -1,0 +1,18 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbr: <http://dbpedia.org/resource/>
+
+
+SELECT * WHERE {
+	?Airports rdf:type schema:Airport	.	# Select all airports
+	?Airports dbo:city ?City			.	# Select the city of all airports
+	?City dbo:country dbr:Canada		.	# Filter the airports by Canada
+  filter (regex (?Airports, "International"))
+}
+
+
+# Unable to find a solid way to search for an international airport, as both
+# international and domestic airports have IATA and ICAO codes, and there was no
+# way (that I found) to access the routes available from airports. So this approach
+# resorts to finding the string "international" in the airport names

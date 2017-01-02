@@ -1,0 +1,16 @@
+PREFIX dbr: <http://dbpedia.org/resource/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?City (xsd:double(xsd:float(?Population)/xsd:float(COUNT(?City))) AS ?Ratio) 
+  WHERE {
+
+  ?City rdf:type schema:City        . 		# Select all instances of the city schema
+  ?City dbo:isPartOf dbr:Alberta      . 	# Select all cities in Alberta
+
+  ?Hospital dbo:region ?City        . 		# Select everything in each city's region
+  ?Hospital rdf:type dbo:Hospital     . 	# Select all hospitals in each city
+
+  ?City dbo:populationTotal ?Population . 	# Select total population for each city
+} ORDER BY DESC (?Ratio)            		# Order by descending order

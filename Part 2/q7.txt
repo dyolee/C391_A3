@@ -1,0 +1,27 @@
+SQL COMMAND TO CREATE INDEX:
+
+	CREATE INDEX subjPred ON rdf (subject, predicate);
+
+
+
+
+JUSTIFYING USE OF INDEXES:
+
+Technically, in the scope of this assignment, indexes are not necessary. Without
+an index, however, query (especially very lengthy ones) will take a very long
+time to execute. Creating an index made our queries run a lot faster. The reason
+why we created an index on subject and predicate is that most of our queries
+include those two columns.
+
+Creating an index on the subject and predicate is good because there are a lot
+of repetition for those two columns. So the index values are few but efficient
+as it breaks down the table in an optimal way.
+
+Creating an index only on the subject is not good because often there are very
+few distinct subjects in comparison to predicates. So there will only be a few
+index entries and speedup will not be a lot.
+
+Creating an index on subject, predicate, and objects are the worst case
+scenario. having an index on the object as well basically makes the number of
+index entries almost the same as the number of values in the table, and resulted
+in little speedup for us.

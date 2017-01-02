@@ -1,0 +1,121 @@
+RELATIONAL SCHEMA:
+
+The basic strategy for our database was to store all triples in a single table
+called "rdf", and all the prefixes in another table called "uri". The SQLite
+statements to do this are as follows:
+
+	CREATE TABLE uri (prefix text UNIQUE, uri text UNIQUE); CREATE TABLE rdf
+	(subject text, predicate text, object text);
+
+
+
+STRATEGY:
+
+To convert the RDF data into a database, we stored the prefix and its uri into
+the table "uri", and we stored the rdf "words" (subjects, predicates, and
+objects) into the table "rdf".
+
+The uri table does not allow duplicates for prefix and uris. So the user cannot
+accidentally define a prefix twice. In any case, even if the user does
+accidentally do so, then the program doesn't return an error message. It simply
+ignores the fact that the prefix is defined twice (it is nicer to the user). But
+if the prefix is not defined then the prefix and its respective uri is added to
+the table.
+
+For the rdf table, the strategy is more complex, due to the fact that every line
+has a different number of arguments based on the previous line's punctuation. In
+order to achieve our goal, we used three things: a list called params
+(parameters), a string variable called previousPunc (previous punctuation), and
+a list called errorCheckOutput (is returned after the error_check function).
+params holds all the words that are missing from the current line but is needed
+(ex. if the previous line ended with a "," then we only have the new object...
+params would be the one to hold the subject and predicate that we need).
+previousPunc is the previous line's punctuation, and basically tells the program
+how many words there should be in params and errorCheckOutput. errorCheckOutput
+holds a string variable holding the previous line's punctuation and a list
+containing the current line's variables. Lots of error checking are also
+included in the code.
+
+
+
+
+EXAMPLE RDF INPUT AND CORRESPONDING RELATIONAL DATABASE:
+
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dbr:	<http://dbpedia.org/resource/> .
+@prefix yago:	<http://dbpedia.org/class/yago/> .
+dbr:Edmonton	rdf:type	yago:WikicatTownsInAlberta ,
+		yago:Town108665504 ,
+		yago:GeographicalArea108574314 .
+@prefix wikidata:	<http://www.wikidata.org/entity/> .
+dbr:Edmonton	rdf:type	wikidata:Q486972 ,
+		yago:Artifact100021939 ,
+		yago:Municipality108626283 .
+@prefix dbo:	<http://dbpedia.org/ontology/> .
+dbr:Edmonton	rdf:type	dbo:City ,
+		dbo:PopulatedPlace ,
+		wikidata:Q515 ,
+		yago:AdministrativeDistrict108491826 ,
+		yago:Way104564698 ,
+		yago:WikicatRoadsInEdmonton ,
+		yago:PhysicalEntity100001930 ,
+		yago:Object100002684 ,
+		dbo:Settlement .
+@prefix umbel-rc:	<http://umbel.org/umbel/rc/> .
+dbr:Edmonton	rdf:type	umbel-rc:City ,
+		yago:WikicatPopulatedPlacesEstablishedIn1795 .
+@prefix geo:	<http://www.w3.org/2003/01/geo/wgs84_pos#> .
+dbr:Edmonton	rdf:type	geo:SpatialThing ,
+		yago:YagoGeoEntity ,
+		yago:YagoPermanentlyLocatedEntity ,
+		yago:UrbanArea108675967 ,
+		yago:YagoLegalActorGeo ,
+		yago:Whole100003553 ,
+		yago:Location100027167 ,
+		yago:Road104096066 .
+
++---------------------------------------------------------------+
+| 						TABLE "URI"								|
++---------------------------------------------------------------+
+| PREFIX 		| URI											|
++---------------------------------------------------------------+
+| rdf          	| http://www.w3.org/1999/02/22-rdf-syntax-ns#	|
+| dbr          	| http://dbpedia.org/resource/					|
+| yago         	| http://dbpedia.org/class/yago/				|
+| wikidata     	| http://www.wikidata.org/entity/				|
+| dbo          	| http://dbpedia.org/ontology/					|
+| umbel-rc     	| http://umbel.org/umbel/rc/					|
+| geo          	| http://www.w3.org/2003/01/geo/wgs84_pos#		|
++---------------------------------------------------------------+
+
++---------------------------------------------------------------------------+
+| 							TABLE "RDF"										|
++---------------------------------------------------------------------------+
+| SUBJECT 		| PREDICATE | OBJECT										|
++---------------------------------------------------------------------------+
+| dbr:Edmonton	| rdf:type	| yago:WikicatTownsInAlberta					|
+| dbr:Edmonton	| rdf:type	| yago:Town108665504							|
+| dbr:Edmonton	| rdf:type	| yago:GeographicalArea108574314				|
+| dbr:Edmonton	| rdf:type	| wikidata:Q486972								|
+| dbr:Edmonton	| rdf:type	| yago:Artifact100021939						|
+| dbr:Edmonton	| rdf:type	| yago:Municipality108626283					|
+| dbr:Edmonton	| rdf:type	| dbo:City										|
+| dbr:Edmonton	| rdf:type	| dbo:PopulatedPlace 							|
+| dbr:Edmonton	| rdf:type	| wikidata:Q515									|
+| dbr:Edmonton	| rdf:type	| yago:AdministrativeDistrict108491826			|
+| dbr:Edmonton	| rdf:type	| yago:Way104564698 							|
+| dbr:Edmonton	| rdf:type	| 		yago:WikicatRoadsInEdmonton 			|
+| dbr:Edmonton	| rdf:type	| yago:PhysicalEntity100001930 					|
+| dbr:Edmonton	| rdf:type	| yago:Object100002684 							|
+| dbr:Edmonton	| rdf:type	| dbo:Settlement								|
+| dbr:Edmonton	| rdf:type	| umbel-rc:City									|
+| dbr:Edmonton	| rdf:type	| yago:WikicatPopulatedPlacesEstablishedIn1795	|
+| dbr:Edmonton	| rdf:type	| geo:SpatialThing								|
+| dbr:Edmonton	| rdf:type	| yago:YagoGeoEntity							|
+| dbr:Edmonton	| rdf:type	| yago:YagoPermanentlyLocatedEntity				|
+| dbr:Edmonton	| rdf:type	| yago:UrbanArea108675967						|
+| dbr:Edmonton	| rdf:type	| yago:YagoLegalActorGeo						|
+| dbr:Edmonton	| rdf:type	| yago:Whole100003553							|
+| dbr:Edmonton	| rdf:type	| yago:Location100027167						|
+| dbr:Edmonton	| rdf:type	| yago:Road104096066							|
++---------------------------------------------------------------------------+
